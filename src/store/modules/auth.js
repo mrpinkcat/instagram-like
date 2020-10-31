@@ -1,31 +1,30 @@
-import strapiAPI from '../../axiosInit';
+import StrapiAPI from '../../axiosInit';
 
 const authModule = {
   state: {
     /**
      * Nom d'utilisateur
      */
-    username,
+    username: undefined,
     /**
      * Email de l'utilisateur
      */
-    email,
+    email: undefined,
     /**
      * Url de la photo de profil de l'utilisateur
      */
-    avatarUrl,
+    avatarUrl: undefined,
     /**
      * Le JSON web token fourni par strapi
      */
-    jwt,
+    jwt: undefined,
   },
   getters: {
     isAuthenticated(state) {
       if (state.jwt) {
         return true;
-      } else {
-        return false;
       }
+      return false;
     },
     getJwt(state) {
       return state.jwt;
@@ -42,7 +41,7 @@ const authModule = {
     setJwt(state, jwt) {
       state.jwt = jwt;
     },
-    setUserInfo(state, {username, email}) {
+    setUserInfo(state, { username, email }) {
       state.username = username;
       state.email = email;
     },
@@ -56,10 +55,10 @@ const authModule = {
   actions: {
     /**
      * Authentification de l'utilisateur chez strapi
-     * @param {{identifier: string, password: string}} credentials 
+     * @param {{identifier: string, password: string}} credentials
      */
     login({ commit }, credentials) {
-      strapiAPI
+      StrapiAPI
         .post('/auth/local', {
           identifier: credentials.identifier,
           password: credentials.password,
@@ -75,16 +74,16 @@ const authModule = {
         // Si l'auth échoue
         .catch((err) => {
           // Handle error.
-          console.log('An error occurred while loggin:', error.response.data);
+          console.log('An error occurred while loggin:', err.response.data);
         });
     },
 
     /**
      * Création d'un utilisateur chez strapi
-     * @param {*} userInfo 
+     * @param {{username: string, email: string, password: string}} userInfo
      */
     register({ commit }, userInfo) {
-      strapiAPI
+      StrapiAPI
         .post('/auth/local/register', {
           username: userInfo.username,
           email: userInfo.email,
@@ -101,7 +100,7 @@ const authModule = {
         // Si le register échoue
         .catch((err) => {
           // Handle error.
-          console.log('An error occurred while register:', error.response.data);
+          console.log('An error occurred while register:', err.response.data);
         });
     },
 
@@ -112,6 +111,6 @@ const authModule = {
       commit('removeUserInfo');
     },
   },
-}
+};
 
-export default authModule
+export default authModule;
