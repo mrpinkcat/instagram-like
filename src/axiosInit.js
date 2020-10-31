@@ -1,8 +1,8 @@
-import Axios from 'axios';
+import { create as Create } from 'axios';
 
-const strapiAPI = new Axios.create({
+const StrapiAPI = new Create({
   baseURL: 'http://localhost:1337',
   timeout: 1000,
 });
 
-export default strapiAPI;
+export default StrapiAPI;
