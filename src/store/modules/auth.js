@@ -1,6 +1,7 @@
 import StrapiAPI from '../../axiosInit';
 
-const authModule = {
+const auth = {
+  namespaced: true,
   state: {
     /**
      * Nom d'utilisateur
@@ -28,6 +29,9 @@ const authModule = {
     },
     getJwt(state) {
       return state.jwt;
+    },
+    getUsername(state) {
+      return state.username;
     },
     getUserInfo(state) {
       return {
@@ -74,7 +78,7 @@ const authModule = {
         // Si l'auth échoue
         .catch((err) => {
           // Handle error.
-          console.log('An error occurred while loggin:', err.response.data);
+          console.log('An error occurred while login:', err.response);
         });
     },
 
@@ -113,4 +117,4 @@ const authModule = {
   },
 };
 
-export default authModule;
+export default auth;

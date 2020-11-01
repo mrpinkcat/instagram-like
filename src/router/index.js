@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
-import Home from '../views/Home.vue';
 import Feed from '../views/Feed.vue';
-import store from '../store';
+import Login from '../components/Login.vue';
+import Register from '../components/Register.vue';
 
 Vue.use(VueRouter);
 
@@ -11,25 +11,16 @@ const routes = [
     path: '/',
     name: 'Home',
     component: Feed,
-    beforeEnter: (to, from, next) => {
-      if (store.getters.logged) {
-        next();
-      } else {
-        next('/connection');
-      }
-    },
-  },
-  {
-    path: '/connection',
-    name: 'Connection',
-    component: Home,
-    beforeEnter: (to, from, next) => {
-      if (!store.getters.logged) {
-        next();
-      } else {
-        next('/');
-      }
-    },
+    children: [
+      {
+        path: 'login',
+        component: Login,
+      },
+      {
+        path: 'register',
+        component: Register,
+      },
+    ],
   },
 ];
 

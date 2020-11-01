@@ -3,7 +3,11 @@
     <span class="title">{{title}}</span>
     <div class="likes" @click="likeClick">
       <span class="heart-number">{{likes.length}}</span>
-      <img src="../assets/heart.svg" />
+      <img
+        v-if="likes.find(like => like.username === getUsername)"
+        src="../assets/heart-filled.svg"
+      />
+      <img v-else src="../assets/heart.svg" />
     </div>
     <img class="media" :src="imageUrl" :alt="title">
   </div>
@@ -54,7 +58,7 @@
     top: -60px;
     left: -20px;
     padding: 10px;
-    background: white;
+    background: rgba($color: #FFF, $alpha: 0.6);
     transition: all .2s ease;
   }
 
@@ -68,7 +72,7 @@
     position: absolute;
     top: -60px;
     right: -20px;
-    background: white;
+    background: rgba($color: #FFF, $alpha: 0.6);
     transition: all .2s ease;
 
     img {
@@ -80,6 +84,8 @@
 </style>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
   props: {
     id: undefined,
@@ -87,6 +93,9 @@ export default {
     imageUrl: undefined,
     likes: undefined,
     author: undefined,
+  },
+  computed: {
+    ...mapGetters({ getUsername: 'auth/getUsername' }),
   },
   methods: {
     likeClick() {
