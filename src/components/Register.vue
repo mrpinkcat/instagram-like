@@ -48,7 +48,7 @@
 import { mapActions } from 'vuex';
 
 export default {
-  name: 'Login',
+  name: 'Register',
   data() {
     return {
       username: '',
