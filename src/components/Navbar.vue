@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
     <span class="brand">SquarePics</span>
-    <router-link class="upload" to="/new-post">
+    <router-link tag="button" class="upload" to="/new-post">
       Share a square
       <!-- eslint-disable -->
       <svg version="1.1" id="upload-icon" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
@@ -20,7 +20,7 @@
     <div class="user" v-if="isAuthenticated">
       <span class="user-name">{{getUsername}}</span>
     </div>
-    <router-link class="disconnected" v-if="!isAuthenticated" to="/login">
+    <router-link tag="button" class="disconnected" v-if="!isAuthenticated" to="/login">
       Login / Signup
     </router-link>
   </div>
