@@ -50,7 +50,7 @@ export default {
   justify-content: center;
   height: 80px;
   width: 100%;
-  padding: 0 25px;
+  padding: 10px 25px;
 
   .brand {
     position: absolute;
