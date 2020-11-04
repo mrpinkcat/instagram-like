@@ -7,6 +7,10 @@ const post = {
      * Posts à afficher dans la feed
      */
     posts: [],
+    /**
+     * progress bar de l'upload
+     */
+    uploadProgression: -1,
   },
   getters: {
     posts(state) {
@@ -18,6 +22,9 @@ const post = {
     postsLength(state) {
       return state.posts.length;
     },
+    getUploadProgression(state) {
+      return state.uploadProgression;
+    },
   },
   mutations: {
     /**
@@ -27,11 +34,23 @@ const post = {
       state.posts = postsArray;
     },
     /**
-     * Ajoute les posts suivant au state sans enlever les précedent
+     * Ajoute les posts suivant a la fin du state sans enlever les précedent
      * (utile pour un infinit scroll);
      */
     postsAddition(state, postsArray) {
       state.posts = [...state.posts, ...postsArray];
+    },
+    /**
+     * Ajoute les posts suivant au début du state sans enlever les suivant
+     * (utile pour ne pas à avoir à refresh la page lors d'un nouveau post);
+     */
+    postsCreation(state, postsArray) {
+      state.posts = [...postsArray, ...state.posts];
+    },
+    // addLike(state, { postId, likeAuthor }) {
+    // },
+    changeUploadProgression(state, progression) {
+      state.uploadProgression = progression;
     },
   },
   actions: {
@@ -74,7 +93,11 @@ const post = {
           console.log('An error occurred while retriving posts:', err.response.data);
         });
     },
-    sendPost({ rootGetters }, { title, description, imageBlob }) {
+    /**
+     * Envoyer un nouveau post à strapi
+     * @param {{ title, description, imageBlob }} postInfo
+     */
+    sendPost({ commit, rootGetters }, { title, description, imageBlob }) {
       return new Promise((resolve, reject) => {
         if (rootGetters['auth/isAuthenticated']) {
           // Création du form data, plus simple pour upload
@@ -82,9 +105,11 @@ const post = {
           const data = new FormData();
           // ajout de l'image au form data
           data.append('files.image', imageBlob, 'zeubi');
+          // ajout de la data au from data (titre description etc);
           data.append('data', JSON.stringify({
             title,
             description,
+            author: rootGetters['auth/getUserInfo'].id,
           }));
 
           StrapiAPI
@@ -92,16 +117,48 @@ const post = {
               headers: {
                 Authorization: `Bearer ${rootGetters['auth/getJwt']}`,
               },
+              // Progression de l'upload
+              onUploadProgress(progressEvent) {
+                commit('changeUploadProgression', Math.round((progressEvent.loaded * 100) / progressEvent.total));
+              },
             })
             .then((res) => {
+              console.log('Post uploaded succesfully!');
+              console.dir(res);
+              commit('postsCreation', [res.data]);
               resolve(res.data);
+              commit('changeUploadProgression', -1);
             })
             .catch((err) => {
-              reject(new Error({
-                message: 'An error occurred while posting a new post',
-                data: err.response.data,
-              }));
-              console.log('An error occurred while posting a new post:', err.response.data);
+              console.log('An error occurred while posting a new post:');
+              console.dir(err);
+              reject(new Error('An error occurred while posting a new post'));
+              commit('changeUploadProgression', -1);
+            });
+        } else {
+          reject(new Error('You are not authenticated !'));
+        }
+      });
+    },
+    likePost({ rootGetters }, postId) {
+      return new Promise((resolve, reject) => {
+        // Check si l'utilisateur est connectecté
+        if (rootGetters['auth/isAuthenticated']) {
+          StrapiAPI
+            .put(`/photo-posts/${postId}`, {
+              // Ajoute son like
+              likes: [rootGetters['auth/getUserInfo'].id],
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${rootGetters['auth/getJwt']}`,
+              },
+            })
+            .then(() => {
+              resolve();
+            })
+            .catch(() => {
+              reject();
             });
         } else {
           reject(new Error({ message: 'You are not authenticated !' }));

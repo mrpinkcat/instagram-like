@@ -12,11 +12,15 @@
           :enableOrientation="true"
           :boundary="{ width: 400, height: 400 }"
           :viewport="{ width: 350, height: 350, type: 'square' }"
-          v-if="fileIsSelected"
-          @result="result">
+          v-if="fileIsSelected">
         </vue-croppie>
         <div class="file-upload" v-else>
-          <input type="file" name="file" id="file" @change="fileUpload"/>
+          <input
+            type="file"
+            name="file"
+            id="file"
+            @change="fileUpload"
+            accept="image/x-png,image/gif,image/jpeg"/>
           <label for="file">
             Choose a file to upload
             <UploadIcon/>
@@ -43,7 +47,18 @@
             </div>
           </div>
           <div>
-            <button class="button big" :disabled="notAllowedToPost" @click="post()">POST</button>
+            <button
+              class="button big"
+              :disabled="notAllowedToPost"
+              @click="post()"
+              v-if="getUploadProgression === -1">
+                POST
+            </button>
+            <span
+              class="upload-progession"
+              v-else>
+                Upload in progress ... ({{getUploadProgression}}%)
+            </span>
           </div>
         </div>
       </div>
@@ -198,6 +213,12 @@
           flex-direction: row;
           justify-content: space-between;
         }
+
+        .upload-progession {
+          height: 42px;
+          font-size: 18px;
+          font-weight: 500;
+        }
       }
     }
   }
@@ -206,7 +227,7 @@
 
 <script>
 import UploadIcon from '@/components/UploadIcon.vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'NewPost',
@@ -222,6 +243,7 @@ export default {
     };
   },
   computed: {
+    ...mapGetters({ getUploadProgression: 'post/getUploadProgression' }),
     notAllowedToPost() {
       if (this.title.length > 2 && this.description.length > 2 && this.fileIsSelected) {
         return false;
@@ -248,6 +270,9 @@ export default {
 
       reader.readAsDataURL(files[0]);
     },
+    /**
+     * Transforme l'image en blob uplodable
+     */
     crop() {
       // Here we are getting the result via callback function
       // and set the result to this.croppedBlob which is being
@@ -264,19 +289,23 @@ export default {
         });
       });
     },
-    result(output) {
-      this.croppedBlob = output;
-    },
+    /**
+     * Fait une rotation de l'image
+     */
     rotate(rotationAngle) {
-      // Rotates the image
       this.$refs.croppieRef.rotate(rotationAngle);
     },
+    /**
+     * Ajoute le post chez strapi
+     */
     post() {
       this.crop().then((blob) => {
         this.sendPost({
           title: this.title,
           description: this.description,
           imageBlob: blob,
+        }).then(() => {
+          this.$router.push('/');
         });
       });
     },

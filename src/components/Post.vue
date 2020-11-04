@@ -84,7 +84,7 @@
 </style>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 
 export default {
   props: {
@@ -98,8 +98,10 @@ export default {
     ...mapGetters({ getUsername: 'auth/getUsername' }),
   },
   methods: {
+    ...mapActions({ likePost: 'post/likePost' }),
+
     likeClick() {
-      console.log('Like !');
+      this.likePost(this.id);
     },
   },
 };
