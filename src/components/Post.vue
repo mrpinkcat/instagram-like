@@ -9,7 +9,17 @@
       />
       <img v-else src="../assets/heart.svg" />
     </div>
-    <img class="media" :src="imageUrl" :alt="title">
+    <VLazyImage
+      v-if="image.formats"
+      class="media"
+      :alt="title"
+      :src="apiUrl + image.url"
+      :src-placeholder="apiUrl + image.formats.thumbnail.url"/>
+    <VLazyImage
+      v-else
+      class="media"
+      :alt="title"
+      :src="apiUrl + image.url"/>
   </div>
 </template>
 
@@ -80,17 +90,35 @@
       height: 30px;
     }
   }
+
+  .v-lazy-image {
+    filter: blur(5px);
+    transition: filter .7s ease;
+  }
+  .v-lazy-image-loaded {
+    filter: blur(0);
+  }
 }
 </style>
 
 <script>
+import VLazyImage from 'v-lazy-image';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
+  name: 'Post',
+  components: {
+    VLazyImage,
+  },
+  data() {
+    return {
+      apiUrl: process.env.VUE_APP_STRAPI_API_URL,
+    };
+  },
   props: {
     id: undefined,
     title: undefined,
-    imageUrl: undefined,
+    image: undefined,
     likes: undefined,
     author: undefined,
   },

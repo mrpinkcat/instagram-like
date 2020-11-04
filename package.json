@@ -11,6 +11,7 @@
     "axios": "^0.21.0",
     "core-js": "^3.6.5",
     "croppie": "^2.6.5",
+    "v-lazy-image": "^1.4.0",
     "vue": "^2.6.11",
     "vue-croppie": "^2.0.2",
     "vue-router": "^3.2.0",

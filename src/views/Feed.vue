@@ -1,14 +1,13 @@
 <template>
   <div class='feed'>
     <Navbar></Navbar>
-    <span v-if="loading > 0">Loading...</span>
     <div class="post-container">
       <Post
         v-for="post in posts"
         :key="post.id"
         :id="post.id"
         :title="post.title"
-        :imageUrl="apiUrl + post.image.url"
+        :image="post.image"
         :likes="post.likes"
         :author="post.author"
       />
@@ -50,12 +49,6 @@ export default {
   components: {
     Post,
     Navbar,
-  },
-  data() {
-    return {
-      apiUrl: process.env.VUE_APP_STRAPI_API_URL,
-      loading: 0,
-    };
   },
   methods: {
     ...mapActions({ retriveFirstPosts: 'post/retriveFirstPosts' }),
