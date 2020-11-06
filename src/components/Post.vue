@@ -9,6 +9,10 @@
       />
       <img v-else src="../assets/heart.svg" />
     </div>
+    <div class="author" v-if="author">
+      <img v-if="author.avatar" :src="apiUrl + author.avatar.url">
+      <span>{{author.fullName}}</span>
+    </div>
     <VLazyImage
       v-if="image.formats"
       class="media"
@@ -25,6 +29,13 @@
 
 <style lang="scss" scoped>
 .post {
+  position: relative;
+  transition: all .2s ease;
+  box-sizing: border-box;
+  overflow: hidden;
+  display: flex;
+  border: 10px white solid;
+
   &:hover {
     border: 13px white solid;
 
@@ -41,14 +52,12 @@
       top: 15px;
       right: 15px;
     }
-  }
 
-  position: relative;
-  transition: all .2s ease;
-  box-sizing: border-box;
-  overflow: hidden;
-  display: flex;
-  border: 10px white solid;
+    .author {
+      bottom: 15px;
+      left: 15px;
+    }
+  }
 
   .media {
     width: 100%;
@@ -68,7 +77,7 @@
     top: -60px;
     left: -20px;
     padding: 10px;
-    background: rgba($color: #FFF, $alpha: 0.6);
+    background: rgba($color: #FFF, $alpha: .85);
     transition: all .2s ease;
   }
 
@@ -82,12 +91,33 @@
     position: absolute;
     top: -60px;
     right: -20px;
-    background: rgba($color: #FFF, $alpha: 0.6);
+    background: rgba($color: #FFF, $alpha: .85);
     transition: all .2s ease;
 
     img {
       margin-left: 8px;
       height: 30px;
+    }
+  }
+
+  .author {
+    height: 42px;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: -60px;
+    left: -20px;
+    z-index: 1;
+    background: rgba($color: #FFF, $alpha: .85);
+    transition: all .2s ease;
+
+    img {
+      width: 42px;
+      height: 42px;
+    }
+
+    span {
+      padding: 0 10px;
     }
   }
 
