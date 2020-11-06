@@ -153,13 +153,20 @@ export default {
     author: undefined,
   },
   computed: {
-    ...mapGetters({ getUsername: 'auth/getUsername' }),
+    ...mapGetters({
+      getUsername: 'auth/getUsername',
+      isAuthenticated: 'auth/isAuthenticated',
+    }),
   },
   methods: {
     ...mapActions({ likePost: 'post/likePost' }),
 
     likeClick() {
-      this.likePost(this.id);
+      if (this.isAuthenticated) {
+        this.likePost(this.id);
+      } else {
+        this.$router.push('/login');
+      }
     },
   },
 };
