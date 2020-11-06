@@ -15,21 +15,12 @@
           v-if="fileIsSelected">
         </vue-croppie>
         <div class="file-upload" v-else>
-          <input
-            type="file"
-            name="file"
-            id="file"
-            @change="fileUpload"
-            accept="image/x-png,image/gif,image/jpeg"/>
-          <label for="file">
-            Choose a file to upload
-            <UploadIcon/>
-          </label>
+          <v-file-input accept="image/x-png,image/gif,image/jpeg" @change="fileUpload" />
         </div>
         <div class="post-info">
           <div class="crop-commands">
-            <button class="button" @click="rotate(-90)">Rotate Left</button>
-            <button class="button" @click="rotate(90)">Rotate Right</button>
+            <v-button @click="rotate(-90)">Rotate Left</v-button>
+            <v-button @click="rotate(90)">Rotate Right</v-button>
           </div>
           <div class="fields">
             <div class="filed-group">
@@ -47,13 +38,13 @@
             </div>
           </div>
           <div>
-            <button
-              class="button big"
+            <v-button
+              class="big"
               :disabled="notAllowedToPost"
               @click="post()"
               v-if="getUploadProgression === -1">
                 POST
-            </button>
+            </v-button>
             <span
               class="upload-progession"
               v-else>
@@ -78,36 +69,6 @@
   justify-content: center;
   align-items: center;
 
-  .button {
-    all: unset;
-    display: flex;
-    align-items: center;
-    border: 1px black solid;
-    padding: 0 15px;
-    height: 30px;
-    cursor: pointer;
-    background: white;
-    font-weight: 500;
-    transition: all .2s ease;
-
-    &.big {
-      padding: 0 25px;
-      height: 40px;
-      font-size: 18px;
-    }
-
-    &:disabled {
-      border: 1px gray solid;
-      color: gray;
-      pointer-events: none;
-    }
-
-    &:hover {
-      background: black;
-      color: white;
-    }
-  }
-
   .modal {
     display: flex;
     flex-direction: column;
@@ -131,43 +92,6 @@
         align-items: center;
         min-width: 400px;
         height: 457px;
-        input {
-          width: 0.1px;
-          height: 0.1px;
-          opacity: 0;
-          overflow: hidden;
-          position: absolute;
-          z-index: -1;
-        }
-
-        input + label {
-          all: unset;
-          display: flex;
-          align-items: center;
-          border: 1px black solid;
-          padding: 0 25px;
-          height: 40px;
-          cursor: pointer;
-          background: white;
-          font-weight: 500;
-          font-size: 18px;
-          transition: all .2s ease;
-
-          .upload-icon {
-            height: 60%;
-            padding-left: 10px;
-            transition: all .2s ease;
-          }
-
-          &:hover {
-            background: black;
-            color: white;
-
-            .upload-icon {
-              fill: white;
-            }
-          }
-        }
       }
 
       .croppie-container {
@@ -226,13 +150,17 @@
 </style>
 
 <script>
-import UploadIcon from '@/components/UploadIcon.vue';
+// import UploadIcon from '@/components/UploadIcon.vue';
+import Button from '@/components/Button.vue';
+import FileInput from '@/components/FileInput.vue';
 import { mapActions, mapGetters } from 'vuex';
 
 export default {
   name: 'NewPost',
   components: {
-    UploadIcon,
+    // 'upload-icon': UploadIcon,
+    'v-button': Button,
+    'v-file-input': FileInput,
   },
   data() {
     return {
