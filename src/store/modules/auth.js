@@ -100,8 +100,7 @@ const auth = {
           .catch((err) => {
             // Handle error.
             console.error('An error occurred while login');
-            console.dir(err.response);
-            reject();
+            reject(err.response.data.data[0].messages[0].message);
           });
       });
     },
