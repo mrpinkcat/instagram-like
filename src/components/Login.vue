@@ -4,6 +4,9 @@
       éviter que le @click du .login soit trigger
       (c.f. https://vuejs.org/v2/guide/events.html#Event-Modifiers)-->
     <div class="modal" @click.stop>
+      <span class="credit">
+        Photo: <a href="https://unsplash.com/@krizgonzalez">Kristian Gonzalez</a>
+      </span>
       <VLazyImage
         class="media"
         :src="apiUrl + imageUrl"
@@ -11,7 +14,7 @@
       <div class="container">
         <h2>Login</h2>
         <form class="form">
-          <span class="error" v-if="error">Email/Username or password is invalid.</span>
+          <span class="error" v-if="error">{{error}}</span>
           <label for="identifier">
             Username / Email:
           </label>
@@ -27,21 +30,23 @@
             Password:
           </label>
           <input
+            ref="password"
             type="password"
             name="password"
             id="password"
             autocomplete="current-password"
-            v-model="password">
+            v-model="password"
+            @keyup.enter.stop="loginClick()">
           <v-button type="button" class="center big" @click="loginClick()">
             Login
           </v-button>
           <!-- <v-button class="center underline">
             I have forgot my password
           </v-button> -->
+        </form>
           <v-button class="center underline" @click="$router.push('/register')">
             I didn't have an account
           </v-button>
-        </form>
       </div>
     </div>
   </div>
@@ -60,12 +65,25 @@
   align-items: center;
 
   .modal {
+    position: relative;
     display: flex;
     flex-direction: row;
     box-sizing: border-box;
     width: 930px;
     background: white;
     overflow: hidden;
+
+    .credit {
+      position: absolute;
+      bottom: 15px;
+      right: calc(50% + 15px);
+      color: white;
+      z-index: 1;
+
+      a {
+        color: white;
+      }
+    }
 
     img {
       width: 50%;
@@ -140,7 +158,7 @@ export default {
   },
   data() {
     return {
-      error: false,
+      error: undefined,
       identifier: '',
       password: '',
       apiUrl: process.env.VUE_APP_STRAPI_API_URL,
@@ -156,8 +174,8 @@ export default {
         .then(() => {
           this.$router.push('/');
         })
-        .catch(() => {
-          this.error = true;
+        .catch((errorMessage) => {
+          this.error = errorMessage;
           this.password = '';
         });
     },
