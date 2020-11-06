@@ -54,6 +54,7 @@
 
 <style lang="scss" scoped>
 .login {
+  z-index: 10;
   background: rgba($color: #000000, $alpha: 0.6);
   position: absolute;
   top: 0;
@@ -78,7 +79,7 @@
       bottom: 15px;
       right: calc(50% + 15px);
       color: white;
-      z-index: 1;
+      z-index: 11;
 
       a {
         color: white;
