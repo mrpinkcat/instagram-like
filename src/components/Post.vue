@@ -34,10 +34,10 @@
   box-sizing: border-box;
   overflow: hidden;
   display: flex;
-  border: 10px white solid;
+  border: 5px white solid;
 
   &:hover {
-    border: 13px white solid;
+    border: 8px white solid;
 
     .media {
       transform: scale(1.1);
