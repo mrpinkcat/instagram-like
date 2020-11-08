@@ -63,7 +63,7 @@
     width: 100%;
     height: 100%;
     transform: scale(1);
-    transition: all .2s ease;
+    transition: transform .2s ease, filter .7s ease;
   }
 
   .title {
@@ -123,7 +123,6 @@
 
   .v-lazy-image {
     filter: blur(5px);
-    transition: filter .7s ease;
   }
   .v-lazy-image-loaded {
     filter: blur(0);
